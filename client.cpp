@@ -37,6 +37,7 @@ void Client::FormatIP() {
     if (inet_pton(AF_INET, server_ip, &server_addr.sin_addr) <= 0) { throw "Invalid address/ Address not supported"; }
 }
 void Client::Loop() {
+    // may need const
     char *message = "Hello, Server!";
     CreateSocket();
     SetupServerAddress();
