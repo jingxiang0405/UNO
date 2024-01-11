@@ -1,10 +1,12 @@
-// #include <stdio.h>
 #include "client.h"
+#include "CLI.h"
+#include "util.h"
 #include <arpa/inet.h>
 #include <errno.h>
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -26,17 +28,76 @@ void Client::SetupServerAddress() {
 void Client::Connect() {
 
     std::cout << "Connecting to server..." << std::endl;
-    if (connect(socket_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-        std::cout << strerror(errno);
-        // throw "Connection failed";
-    }
+    if (connect(socket_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) { throw "Connection failed"; }
 }
 void Client::FormatIP() {
 
     std::cout << "Formating IP:" << server_ip << std::endl;
     if (inet_pton(AF_INET, server_ip, &server_addr.sin_addr) <= 0) { throw "Invalid address/ Address not supported"; }
 }
+
+void Client::SendNameToServer() {
+    std::cout << "Enter your name:" << std::flush;
+    std::cin >> name;
+    send(socket_fd, name.c_str(), name.length(), 0);
+}
+
 void Client::Loop() {
+<<<<<<< HEAD
+
+    // connection procedure
+    try {
+        CreateSocket();
+        SetupServerAddress();
+        FormatIP();
+        Connect();
+        SendNameToServer();
+    } catch (const char *msg) { std::cerr << err << std::endl; }
+
+    // string buffer for I/O with server
+    char buf[1024];
+
+
+    bool running = true;
+   
+    // I&O loop
+    while (running) {
+
+        // read message from server
+        memset(buf, 0, 1024);
+        read(socket_fd, buf, 1024);
+
+        // check action
+        char action = buf[0];
+
+        // string for further manipulations
+        std::string str;
+        str.assign(buf + 1);
+        std::vector<std::string> ss = string_split(str, ',');
+        // init
+        if (buf[0] == 'i') {
+            this->id = std::stoi(ss[0]);
+            for (int i = 0; i < 3; ++i) {
+                this->foes_name[i] = ss[i + 1];
+            }
+            continue;
+        }
+
+        // end action
+        else if (buf[0] == 'e') {
+
+            break;
+        }
+        // update action 
+        else if (buf[0] == 'u') {}
+
+        // TODO get command
+        char *message = "hello from client";
+
+        // send messages to server
+        send(socket_fd, message, strlen(message), 0);
+    }
+=======
     // may need const
     char *message = "Hello, Server!";
     CreateSocket();
@@ -46,10 +107,12 @@ void Client::Loop() {
     //
     send(socket_fd, message, strlen(message), 0);
     std::cout << "Message sent to server: " << message << std::endl;
+>>>>>>> 12e55fa8bb69783b55daf4a94102e8c83ea9891e
 
     close(socket_fd);
 }
 
+// creating a thread for execution
 std::thread Client::Spawn() {
     return std::thread([this] { Loop(); });
 }

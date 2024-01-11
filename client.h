@@ -14,10 +14,18 @@ private:
     void SetupServerAddress();
     void FormatIP();
     void Connect();
-
     void Loop();
-
+    
+    void Print();
+    void SendNameToServer();
+    // for displaying
+    std::string name;
+    std::string foes_name[3];
     char *server_ip;
+    
+    // identity in the game
+    int id;
+
     int port;
     int socket_fd;
     sockaddr_in server_addr;

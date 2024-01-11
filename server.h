@@ -5,18 +5,19 @@
 #include <netinet/in.h>
 class Server {
 public:
-    Server(int port = 8080);
+    Server(int player_count, int port);
     char *getIP() const;
     std::thread Spawn();
 private:
     void CreateSocket();
     void SetupAddress();
-
     void BindAddress();
     void Listen();
     int Accept();
 
     void Loop();
+
+
     char *ip;
     int port, max_player_count;
     int server_fd;

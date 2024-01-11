@@ -1,11 +1,14 @@
 #include "client.h"
 #include "server.h"
+#include <functional>
 #include <iostream>
 #include <thread>
-#include <functional>
+
+const int PORT = 8080;
 int main (int argc, char *argv[]) {
 
-    // no parameter
+    // username
+    std::string name;
     switch (argc) {
     case 1:
         std::cout << "Please specify program type\n"
@@ -15,24 +18,31 @@ int main (int argc, char *argv[]) {
 
     case 2:
         int programType = atoi(argv[1]);
-    
+
         if (programType == 2) {
-            Server s;
-            Client c;
-            
+            int player_count;
+            std::cout << "Specify player count:" << std::flush;
+            std::cin >> player_count;
+            Server s(player_count, PORT);
+            Client c(PORT);
+            c.SetServerIP(s.getIP());
             s.Spawn().join();
             c.Spawn().join();
         } else if (programType == 1) {
-            Client c;
-            char* ip = new char[15];
+
+            char *ip = new char[15];
             std::cout << "Server ip address:";
             std::cout.flush();
             std::cin >> ip;
+
+            Client c(PORT);
             c.SetServerIP(ip);
             c.Spawn().join();
-
         } else if (programType == 0) {
-            Server s;
+            int player_count;
+            std::cout << "Specify player count:" << std::flush;
+            std::cin >> player_count;
+            Server s(player_count, PORT);
             s.Spawn().join();
         }
     }

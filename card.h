@@ -4,7 +4,9 @@
 #define YELLOW_BG \e[43w
 #define BLUE_BG \e[44m
 
-char card[][] = {
+const int CARD_COUNT = 15;
+const int CARD_HEIGHT = 14;
+char card[CARD_COUNT][CARD_COUNT] = {
 
     {
         "********************",
@@ -205,8 +207,8 @@ char card[][] = {
         "*       OOOOOO     *",
         "*      OOOOOOOO    *",
         "*       OOO        *",
-        "*      OO  OO      *",
-        "*      OO  OO      *",
+        "*      OOOO        *",
+        "*        OOOO      *",
         "*        OOO       *",
         "*    OOOOOOOO      *",
         "*     OOOOOO       *",

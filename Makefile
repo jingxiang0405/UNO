@@ -3,8 +3,12 @@ CXX = g++
 
 # -wall 可讓 errors 全部印出來
 # 可以在這裡加優化（-01, -02...）
+<<<<<<< HEAD
+CXXFLAGS = -std=c++14 -Wall 
+=======
 # 可以在這裡指定版本
 CXXFLAGS = -Wall -std=c++11
+>>>>>>> 12e55fa8bb69783b55daf4a94102e8c83ea9891e
 
 # 執行檔名
 TARGET = exec

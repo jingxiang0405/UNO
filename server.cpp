@@ -9,8 +9,6 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-int server_port;
-int max_player_count;
 
 char *GetIPAddress () {
     struct ifaddrs *ifaddr, *ifa;
@@ -41,9 +39,9 @@ char *GetIPAddress () {
     return nullptr;
 }
 
-Server::Server(int port) {
+Server::Server(int player_count, int port) {
     this->port = port;
-    max_player_count = 10;
+    this->max_player_count = player_count;
     ip = GetIPAddress();
     if (ip == nullptr) throw("Can't get IP address");
     // memset(&server_addr, '0', sizeof(server_addr));
@@ -78,6 +76,11 @@ int Server::Accept() {
 
     return socket;
 }
+
+
+char* Server::getIP() const{
+    return ip;
+}
 void Server::Loop() {
 
     CreateSocket();
@@ -86,22 +89,47 @@ void Server::Loop() {
     Listen();
 
     int addrlen = sizeof(address);
-    char buffer[1024] = {0};
-    char *message = "Hello from server!";
 
     char *ip_address = GetIPAddress();
 
     printf("Server is up on ip:%s\n", ip);
-    while (true) {
+    
+    // wait for 4 players
+    int client_sockets[max_player_count];
+    std::string client_names[max_player_count];
+    for(int i = 0; i < max_player_count; ++i){
+        char buf[20];
+        memset(buf, 0, 20);
         int new_socket = Accept();
-        int *new_socket_ptr = new int;
-        *new_socket_ptr = new_socket;
+        client_sockets[i] = new_socket;
+        read(new_socket, buf, 20);
+        client_names[i] = std::string(buf);
+        printf("Client Connected: \"%s\"\n", buf);
+    }
 
-        read(new_socket, buffer, 1024);
-        std::cout << "Message from client: " << buffer << std::endl;
+    // send init message
+    for(int i = 0; i < max_player_count; ++i){
+       
+        // id
+        std::string message = "i" + std::to_string(i+1);
+        
+        // other players' name
+        for(int j = 0; j < max_player_count; ++j){
+            if(i==j)continue;
 
-        send(new_socket, message, strlen(message), 0);
-        std::cout << "Hello message sent" << std::endl;
+            message += "," + client_names[j];
+        }
+
+        // send init message
+        write(client_sockets[i], message.c_str(), message.length());
+
+    }
+    // in-game loop
+    char buffer[1024];
+    while(true){
+        for(int i = 0; i < max_player_count; ++i){
+            read(client_sockets[i], buffer, 1024);
+        }
     }
 }
 
