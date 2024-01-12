@@ -15,7 +15,7 @@ char *GetIPAddress () {
     int family, s;
     char *host = new char[NI_MAXHOST];
 
-    if (getifaddrs(&ifaddr) == -1) { throw("At Server_GetIPAddress: getifaddrs() failed"); }
+    if (getifaddrs(&ifaddr) == -1) { throw("At Server::GetIPAddress(): getifaddrs() failed"); }
 
     for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
         if (ifa->ifa_addr == NULL) { continue; }
@@ -28,44 +28,58 @@ char *GetIPAddress () {
             if (s != 0) { exit(EXIT_FAILURE); }
 
             if (family == AF_INET) {
-                if (strcmp(ifa->ifa_name, "lo") != 0) { // Exclude loopback address
-                    if (strstr(host, "192.168") != nullptr) return host;
+                if (strcmp(ifa->ifa_name, "lo0") != 0) { // Exclude loopback address
+                    std::cout << "host:" << host << std::endl;
+                    /* if (strstr(host, "192.168") != nullptr) return host; */
+                    return host;
                 }
             }
         }
     }
 
     freeifaddrs(ifaddr);
-    return nullptr;
+    throw "Server Address not found";
 }
 
 Server::Server(int player_count, int port) {
     this->port = port;
     this->max_player_count = player_count;
-    ip = GetIPAddress();
-    if (ip == nullptr) throw("Can't get IP address");
-    // memset(&server_addr, '0', sizeof(server_addr));
+    try{
+        ip = GetIPAddress();
+    }catch(const char* e){
+        std::cerr << e << std::endl;
+    }
 }
-void Server::CreateSocket() {
 
-    std::cout << "creating socket" << std::endl;
+Server* Server::complete(){
+    std::cout << "Complete" << std::endl;
+    return this;
+}
+Server* Server::CreateSocket() {
+
+    std::cout << "Creating socket..." << std::flush;
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) { perror("Socket creation error"); }
+    return this;
 }
 
-void Server::SetupAddress() {
+Server* Server::SetupAddress() {
+    std::cout << "Setting address" << std::flush;
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = inet_addr(ip);
     address.sin_port = htons(port);
+    return this;
 }
 
-void Server::BindAddress() {
+Server* Server::BindAddress() {
     std::cout << "binding address" << std::endl;
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) { throw "Socket binding error"; }
+    return this;
 }
 
-void Server::Listen() {
+Server* Server::Listen() {
     std::cout << "listening...(max:" << max_player_count << std::endl;
     if (listen(server_fd, max_player_count) < 0) { throw "Socket listen error"; }
+    return this;
 }
 
 int Server::Accept() {
@@ -83,18 +97,24 @@ char* Server::getIP() const{
 }
 void Server::Loop() {
 
-    CreateSocket();
-    SetupAddress();
-    BindAddress();
-    Listen();
+    printf("Initializing Server...\n");
+    try{
+     CreateSocket()->complete()
+         ->SetupAddress()->complete()
+         ->BindAddress()->complete()
+         ->Listen()->complete();
 
-    int addrlen = sizeof(address);
+
+    }catch(const char* e){
+        std::cerr << e << std::endl;
+    }
+       int addrlen = sizeof(address);
 
     char *ip_address = GetIPAddress();
 
     printf("Server is up on ip:%s\n", ip);
     
-    // wait for 4 players
+    // wait for clients connection
     int client_sockets[max_player_count];
     std::string client_names[max_player_count];
     for(int i = 0; i < max_player_count; ++i){
@@ -124,6 +144,7 @@ void Server::Loop() {
         write(client_sockets[i], message.c_str(), message.length());
 
     }
+
     // in-game loop
     char buffer[1024];
     while(true){

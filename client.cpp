@@ -43,7 +43,6 @@ void Client::SendNameToServer() {
 }
 
 void Client::Loop() {
-<<<<<<< HEAD
 
     // connection procedure
     try {
@@ -52,7 +51,7 @@ void Client::Loop() {
         FormatIP();
         Connect();
         SendNameToServer();
-    } catch (const char *msg) { std::cerr << err << std::endl; }
+    } catch (const char *e) { std::cerr << e << std::endl; }
 
     // string buffer for I/O with server
     char buf[1024];
@@ -97,18 +96,7 @@ void Client::Loop() {
         // send messages to server
         send(socket_fd, message, strlen(message), 0);
     }
-=======
-    // may need const
-    char *message = "Hello, Server!";
-    CreateSocket();
-    SetupServerAddress();
-    FormatIP();
-    Connect();
-    //
-    send(socket_fd, message, strlen(message), 0);
-    std::cout << "Message sent to server: " << message << std::endl;
->>>>>>> 12e55fa8bb69783b55daf4a94102e8c83ea9891e
-
+ 
     close(socket_fd);
 }
 

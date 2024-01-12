@@ -9,14 +9,14 @@ public:
     char *getIP() const;
     std::thread Spawn();
 private:
-    void CreateSocket();
-    void SetupAddress();
-    void BindAddress();
-    void Listen();
+    Server* CreateSocket();
+    Server* SetupAddress();
+    Server* BindAddress();
+    Server* Listen();
+    Server* complete();
     int Accept();
 
     void Loop();
-
 
     char *ip;
     int port, max_player_count;

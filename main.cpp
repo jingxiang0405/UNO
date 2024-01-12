@@ -10,6 +10,8 @@ int main (int argc, char *argv[]) {
     // username
     std::string name;
     switch (argc) {
+
+    // wrong usage
     case 1:
         std::cout << "Please specify program type\n"
                   << "Usage:\n"
@@ -19,6 +21,7 @@ int main (int argc, char *argv[]) {
     case 2:
         int programType = atoi(argv[1]);
 
+        // Server and Client
         if (programType == 2) {
             int player_count;
             std::cout << "Specify player count:" << std::flush;
@@ -28,7 +31,10 @@ int main (int argc, char *argv[]) {
             c.SetServerIP(s.getIP());
             s.Spawn().join();
             c.Spawn().join();
-        } else if (programType == 1) {
+        }
+
+        // Client only
+        else if (programType == 1) {
 
             char *ip = new char[15];
             std::cout << "Server ip address:";
@@ -38,7 +44,9 @@ int main (int argc, char *argv[]) {
             Client c(PORT);
             c.SetServerIP(ip);
             c.Spawn().join();
-        } else if (programType == 0) {
+        }
+        // Server only
+        else if (programType == 0) {
             int player_count;
             std::cout << "Specify player count:" << std::flush;
             std::cin >> player_count;
