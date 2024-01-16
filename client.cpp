@@ -65,7 +65,7 @@ void Client::Loop() {
         // read message from server
         memset(buf, 0, 1024);
         read(socket_fd, buf, 1024);
-
+        std::cout << "Message from server:" << buf << std::endl;
         // check action
         char action = buf[0];
 
@@ -75,6 +75,7 @@ void Client::Loop() {
         std::vector<std::string> ss = string_split(str, ',');
         // init
         if (buf[0] == 'i') {
+            std::cout << "Init" << std::endl;
             this->id = std::stoi(ss[0]);
             for (int i = 0; i < 3; ++i) {
                 this->foes_name[i] = ss[i + 1];

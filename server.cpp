@@ -28,9 +28,8 @@ char *GetIPAddress () {
             if (s != 0) { exit(EXIT_FAILURE); }
 
             if (family == AF_INET) {
-                if (strcmp(ifa->ifa_name, "lo0") != 0) { // Exclude loopback address
+                if (strcmp(host, "127.0.0.1") != 0) { // Exclude loopback address
                     std::cout << "host:" << host << std::endl;
-                    /* if (strstr(host, "192.168") != nullptr) return host; */
                     return host;
                 }
             }
