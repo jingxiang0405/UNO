@@ -3,7 +3,6 @@
 #include <functional>
 #include <iostream>
 #include <thread>
-
 const int PORT = 8080;
 int main (int argc, char *argv[]) {
 

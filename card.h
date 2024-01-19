@@ -1,12 +1,23 @@
-#define BLACK_BG \e[40m
-#define RED_BG \e[41m
-#define GREEN_BG \e[42m
-#define YELLOW_BG \e[43w
-#define BLUE_BG \e[44m
+#ifndef CARD_H
+#define CARD_H
 
+#include <string>
+
+enum Color{
+    RED, GREEN, YELLOW, BLUE, NONE
+};
+enum Index{
+    ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, SKIP, REVERSE, DRAW_TWO, WILD, WILD_DRAW_FOUR
+};
+
+struct Card{
+    Color color;
+    Index index;
+    Card(Color c, Index i): color(c), index(i){}
+};
 const int CARD_COUNT = 15;
 const int CARD_HEIGHT = 14;
-char card[CARD_COUNT][CARD_COUNT] = {
+const std::string card_display_array[CARD_COUNT][CARD_HEIGHT] = {
 
     {
         "********************",
@@ -187,16 +198,16 @@ char card[CARD_COUNT][CARD_COUNT] = {
     {
         "********************",
         "*                  *",
-        "*     OOOOOOOO     *",
-        "*    OOOOOOOOOO    *",
-        "*   OOO    OOOOO   *",
-        "*   OOO   OOOOOO   *",
-        "*   OOO  OOO OOO   *",
-        "*   OOO OOO  OOO   *",
-        "*   OOOOOO   OOO   *",
-        "*   OOOOO    OOO   *",
-        "*    OOOOOOOOOO    *",
-        "*     OOOOOOOO     *",
+        "*                  *",
+        "*   OOO      OOO   *",
+        "*    OOO    OOO    *",
+        "*     OOO  OOO     *",
+        "*      OOOOOO      *",
+        "*       OOOO       *",
+        "*      OOOOOO      *",
+        "*     OOO  OOO     *",
+        "*    OOO    OOO    *",
+        "*   OOO      OOO   *",
         "*                  *",
         "********************",
     },
@@ -235,37 +246,43 @@ char card[CARD_COUNT][CARD_COUNT] = {
 
     },
     {
+        // Wild
         "********************",
         "*                  *",
-        "*    OOOOOOOOOO    *",
-        "*    OO      OO    *",
-        "*    O O    O O    *",
-        "*    O  O  O  O    *",
-        "*    O   OO   O    *",
-        "*    O   OO   O    *",
-        "*    O  O  O  O    *",
-        "*    O O    O O    *",
-        "*    OO      OO    *",
-        "*    OOOOOOOOOO    *",
+        "*    \e[41m     \e[44m     \e[0m    *",
+        "*   \e[41m      \e[44m      \e[0m   *",
+        "*  \e[41m       \e[44m       \e[0m  *",
+        "*  \e[41m       \e[44m       \e[0m  *",
+        "*  \e[41m       \e[44m       \e[0m  *",
+        "*  \e[43m       \e[42m       \e[0m  *",
+        "*  \e[43m       \e[42m       \e[0m  *",
+        "*  \e[43m       \e[42m       \e[0m  *",
+        "*   \e[43m      \e[42m      \e[0m   *",
+        "*    \e[43m     \e[42m     \e[0m    *",
         "*                  *",
         "********************",
-
     },
 
+
     {
+        // Wild Draw Four
         "********************",
         "* +4               *",
-        "*      OOOOOO      *",
-        "*  OOOOOO   O      *",
-        "*  O    O  OOOOOO  *",
-        "*  O    O  O    O  *",
-        "*  O   OOOOO    O  *",
-        "*  OOOOO   O    O  *",
-        "*      O   OOOOOO  *",
-        "*      O    O      *",
-        "*      OOOOOO      *",
+        "*      \e[44m      \e[0m      *",
+        "*  \e[41m    \e[44m      \e[0m      *",
+        "*  \e[41m    \e[44m    \e[42m      \e[0m  *",
+        "*  \e[41m    \e[44m    \e[42m      \e[0m  *",
+        "*  \e[41m    \e[43m    \e[42m      \e[0m  *",
+        "*  \e[41m    \e[43m    \e[42m      \e[0m  *",
+        "*      \e[43m    \e[42m      \e[0m  *",
+        "*      \e[43m      \e[0m      *",
+        "*      \e[43m      \e[0m      *",
         "*               +4 *",
         "********************",
     }
 
 };
+
+
+
+#endif

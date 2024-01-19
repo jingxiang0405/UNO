@@ -43,7 +43,6 @@ void Client::SendNameToServer() {
 }
 
 void Client::Loop() {
-
     // connection procedure
     try {
         CreateSocket();
@@ -54,7 +53,7 @@ void Client::Loop() {
     } catch (const char *e) { std::cerr << e << std::endl; }
 
     // string buffer for I/O with server
-    char buf[1024];
+    char* buf = new char[1024];
 
 
     bool running = true;
@@ -76,9 +75,10 @@ void Client::Loop() {
         // init
         if (buf[0] == 'i') {
             std::cout << "Init" << std::endl;
-            this->id = std::stoi(ss[0]);
-            for (int i = 0; i < 3; ++i) {
-                this->foes_name[i] = ss[i + 1];
+            std::cout << "Your id is "<< ss[0] << std::endl;
+            this->id = ss[0].c_str()[0] - '0';
+            for (int i = 2; i < ss.size(); ++i) {
+                this->foes_name.push_back(ss[i]);
             }
             continue;
         }
@@ -89,7 +89,9 @@ void Client::Loop() {
             break;
         }
         // update action 
-        else if (buf[0] == 'u') {}
+        else if (buf[0] == 'u') {
+
+        }
 
         // TODO get command
         char *message = "hello from client";

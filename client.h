@@ -1,6 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 #include <netinet/in.h>
+#include <vector>
 #include <string>
 #include <thread>
 class Client {
@@ -20,8 +21,8 @@ private:
     void SendNameToServer();
     // for displaying
     std::string name;
-    std::string foes_name[3];
-    char *server_ip;
+    std::vector<std::string> foes_name;
+    char *server_ip = nullptr;
     
     // identity in the game
     int id;
