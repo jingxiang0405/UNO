@@ -3,18 +3,6 @@
 
 #include <string>
 
-enum Color{
-    RED, GREEN, YELLOW, BLUE, NONE
-};
-enum Index{
-    ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, SKIP, REVERSE, DRAW_TWO, WILD, WILD_DRAW_FOUR
-};
-
-struct Card{
-    Color color;
-    Index index;
-    Card(Color c, Index i): color(c), index(i){}
-};
 const int CARD_COUNT = 15;
 const int CARD_HEIGHT = 14;
 const std::string card_display_array[CARD_COUNT][CARD_HEIGHT] = {
@@ -154,7 +142,7 @@ const std::string card_display_array[CARD_COUNT][CARD_HEIGHT] = {
         "*       OOOOO      *",
         "*      OOOOO       *",
         "*     OOOOO        *",
-        "*    OOOOO        *",
+        "*    OOOOO         *",
         "*   OOOOO          *",
         "*   OOOO           *",
         "*                  *",
@@ -263,11 +251,11 @@ const std::string card_display_array[CARD_COUNT][CARD_HEIGHT] = {
         "********************",
     },
 
-
     {
         // Wild Draw Four
         "********************",
         "* +4               *",
+        "*      \e[44m      \e[0m      *",
         "*      \e[44m      \e[0m      *",
         "*  \e[41m    \e[44m      \e[0m      *",
         "*  \e[41m    \e[44m    \e[42m      \e[0m  *",
@@ -282,7 +270,5 @@ const std::string card_display_array[CARD_COUNT][CARD_HEIGHT] = {
     }
 
 };
-
-
 
 #endif
