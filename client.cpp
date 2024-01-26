@@ -9,7 +9,6 @@
 #include <string>
 #include <sys/socket.h>
 #include <unistd.h>
-
 Client::Client(int port) { this->port = port; }
 
 void Client::SetServerIP(char *ip) { this->server_ip = ip; }

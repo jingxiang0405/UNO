@@ -93,8 +93,3 @@ void CLI::print_end(int winner_id) {
             << CLI::all_player_name[winner_id] << " is the winner!" << std::endl
             << "==============================" << std::endl;
 }
-
-/* int main() { */
-/*   std::vector<std::string> msg_arr = {"2", "tr", "9b8r7g", "3", "5", "3"}; */
-/*   CLI::print_update(msg_arr); */
-/* } */

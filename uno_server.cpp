@@ -1,9 +1,6 @@
 #include "dealer.h"
 #include "util.h"
 
-#include <iostream>
-using namespace std;
-
 extern "C" {
 #include <stdio.h>
 #include <string.h>

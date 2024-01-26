@@ -10,9 +10,11 @@ public:
   char *get_card(int quantity);
   char *get_first_card();
   inline int size() { return deck.size(); }
-  /* private: */
-  std::vector<std::string> deck;
+
   void init();
+
+private:
+  std::vector<std::string> deck;
 };
 
 #endif
