@@ -52,7 +52,8 @@ char *GetIPAddress() {
       if (family == AF_INET) {
         if (strcmp(host, "127.0.0.1") != 0) { // Exclude loopback address
 
-          return host;
+          if (strstr(host, "192"))
+            return host;
         }
       }
     }
@@ -198,6 +199,7 @@ void Server::Loop() {
     }
     int id = get_current_id();
     if (id == -1) {
+
       break;
     } else {
       std::cout << "Now is id=" << id << "\'s turn" << std::endl;

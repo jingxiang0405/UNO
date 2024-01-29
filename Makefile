@@ -3,7 +3,7 @@ CXX = g++
 
 # -wall 可讓 errors 全部印出來
 # 可以在這裡加優化（-01, -02...）
-CXXFLAGS = -std=c++14 -Wall 
+CXXFLAGS = -std=c++14 -Wall -pthread 
 # 可以在這裡指定版本
 CXXFLAGS = -Wall -std=c++11
 

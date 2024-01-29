@@ -67,6 +67,7 @@ Player *get_next_player() {
   return (order) ? current_player->next : current_player->prev;
 }
 char *command_to_client(int client_id) {
+
   char *str;
   int status = check_end();
   if (status == 0)
@@ -76,6 +77,7 @@ char *command_to_client(int client_id) {
     str = new char[len];
     char *buffer = new char[10];
     int index;
+
     // fixed position
     str[0] = 'u';
     str[1] = current_player->id + '0';
@@ -102,6 +104,7 @@ char *command_to_client(int client_id) {
       strncpy(str + index, buffer, len);
       index += len;
     }
+    delete[] buffer;
   } else {
     str = new char[2];
     str[0] = 'e';
@@ -121,7 +124,6 @@ void draw(int id, int count) {
 }
 
 void handle_client_message(char *card) {
-  cout << "top=" << top_card << ", card=" << card << endl;
   char type = card[0];
   int turn = 1;
 

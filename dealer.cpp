@@ -34,7 +34,7 @@ UnoDealer::UnoDealer() { init(); }
 char *UnoDealer::get_card() {
   std::string s = deck.back();
   deck.pop_back();
-  char *result = new char[3];
+  char *result = new char[2];
   strncpy(result, s.c_str(), s.length());
   return result;
 }
