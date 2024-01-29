@@ -21,9 +21,11 @@ int nPlayer;
 
 Player *current_player;
 bool order;
+bool isEnd;
 
 void uno_server_init(int player_count) {
   order = true;
+  isEnd = false;
   nPlayer = player_count;
   // sequence list
   current_player = new Player(0);
@@ -59,7 +61,7 @@ int check_end() {
     if (strlen(card_arr[i]) == 0)
       return i;
   }
-  return 0;
+  return -1;
 }
 
 Player *get_next_player() {
@@ -70,7 +72,7 @@ char *command_to_client(int client_id) {
 
   char *str;
   int status = check_end();
-  if (status == 0)
+  if (status == -1)
 
   {
     int len = 7 + strlen(card_arr[client_id]) + (3 * nPlayer);
@@ -106,6 +108,7 @@ char *command_to_client(int client_id) {
     }
     delete[] buffer;
   } else {
+    isEnd = true;
     str = new char[2];
     str[0] = 'e';
     str[1] = status + '0';
@@ -183,4 +186,4 @@ void handle_client_message(char *card) {
   }
 }
 
-int get_current_id() { return current_player->id; }
+int get_current_id() { return (isEnd) ? -1 : current_player->id; }

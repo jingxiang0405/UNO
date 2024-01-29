@@ -51,9 +51,7 @@ char *GetIPAddress() {
 
       if (family == AF_INET) {
         if (strcmp(host, "127.0.0.1") != 0) { // Exclude loopback address
-
-          if (strstr(host, "192"))
-            return host;
+          return host;
         }
       }
     }
