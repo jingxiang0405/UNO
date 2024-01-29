@@ -80,7 +80,12 @@ char *command_to_client(int client_id) {
     char *buffer = new char[10];
     int index;
 
-    // fixed position
+    // 請完成command字串處理的前五個字
+    // 結果為"u[當前玩家id],[當前UNO牌],"
+    // 後面的已經做好了
+    // -------------
+    // =   區塊5   =
+    // -------------
     str[0] = 'u';
     str[1] = current_player->id + '0';
     str[2] = ',';
@@ -132,6 +137,9 @@ void handle_client_message(char *card) {
 
   // draw  card
   if (card[0] == 'd') {
+    // -------------
+    // =   區塊6   =
+    // -------------
     draw(current_player->id, 1);
   }
   // play card
@@ -141,6 +149,9 @@ void handle_client_message(char *card) {
     case 'f': {
       draw(get_next_player()->id, 4);
 
+      // -------------
+      // =   區塊6   =
+      // -------------
       // skip next player
       ++turn;
       // for deletion of card_arr
@@ -148,23 +159,34 @@ void handle_client_message(char *card) {
       break;
     }
     case 'w': {
-
+      // -------------
+      // =   區塊6   =
+      // -------------
       // for deletion of card_arr
       card[1] = 'n';
       break;
     }
     case 't': {
+      // -------------
+      // =   區塊6   =
+      // -------------
       draw(get_next_player()->id, 2);
       // skip next player
       ++turn;
       break;
     }
     case 's': {
+      // -------------
+      // =   區塊6   =
+      // -------------
       // skip next player
       ++turn;
       break;
     }
     case 'r': {
+      // -------------
+      // =   區塊6   =
+      // -------------
       order = !order;
       break;
     }
@@ -186,4 +208,9 @@ void handle_client_message(char *card) {
   }
 }
 
-int get_current_id() { return (isEnd) ? -1 : current_player->id; }
+int get_current_id() {
+  // -------------
+  // =   區塊7   =
+  // -------------
+  return (isEnd) ? -1 : current_player->id;
+}

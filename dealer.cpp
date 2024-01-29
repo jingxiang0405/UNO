@@ -42,6 +42,10 @@ char *UnoDealer::get_card() {
 char *UnoDealer::get_card(int quantity) {
   std::string s;
   for (int i = 0; i < quantity; ++i) {
+    // -------------
+    // =   區塊3   =
+    // -------------
+
     s += deck.back();
     deck.pop_back();
   }
@@ -51,8 +55,12 @@ char *UnoDealer::get_card(int quantity) {
 }
 
 char *UnoDealer::get_first_card() {
+  // -------------
+  // =   區塊4   =
+  // -------------
   std::string s;
   while (true) {
+
     s = deck.back();
     deck.pop_back();
 
