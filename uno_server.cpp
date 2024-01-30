@@ -25,7 +25,7 @@ char *top_card;
 // 玩家個數
 int number_of_player;
 
-// 當前玩家個數
+// 當前玩家的指標
 Player *current_player;
 
 // 代表玩家的順序是順時針或逆時針（不用管true是順還逆）
