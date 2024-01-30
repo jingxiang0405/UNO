@@ -2,15 +2,15 @@
 #define SERVER_H
 #include <ifaddrs.h>
 #include <netinet/in.h>
-#include <thread>
 class Server {
 public:
   Server(int player_count, int port);
   ~Server();
   char *getIP() const;
-  std::thread Spawn();
+  void Start();
 
 private:
+  // for connection
   Server *CreateSocket();
   Server *SetupAddress();
   Server *BindAddress();
@@ -18,6 +18,7 @@ private:
   Server *complete();
   int Accept();
 
+  // main loop
   void Loop();
 
   char *ip;

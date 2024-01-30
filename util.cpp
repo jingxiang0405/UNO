@@ -1,5 +1,9 @@
 #include "util.h"
 #include <sstream>
+
+extern "C" {
+#include <string.h>
+}
 std::vector<std::string> Util::string_split(const std::string &str,
                                             char delimeter) {
   std::vector<std::string> tokens;

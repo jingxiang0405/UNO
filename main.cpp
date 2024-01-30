@@ -6,6 +6,7 @@
 const int PORT = 8080;
 
 int get_player_count() {
+  // 請在標準輸入(standard input)裡獲取總玩家人數
   // -------------
   // =   區塊1   =
   // -------------
@@ -13,6 +14,9 @@ int get_player_count() {
   std::cout << "Specify player count:" << std::flush;
   std::cin >> player_count;
   return player_count;
+  // -------------
+  // =   區塊1   =
+  // -------------
 }
 int main(int argc, char *argv[]) {
 
@@ -40,18 +44,14 @@ int main(int argc, char *argv[]) {
 
       Client c(PORT);
       c.SetServerIP(ip);
-      c.Spawn().join();
+      c.Start();
     }
     // Server
     else if (programType == 0) {
       int player_count = get_player_count();
-      try {
-        Server s(player_count, PORT);
-        s.Spawn().join();
-      } catch (const char *e) {
-        std::cerr << e << std::endl;
-        return -1;
-      }
+
+      Server s(player_count, PORT);
+      s.Start();
     }
 
     else {
@@ -61,6 +61,9 @@ int main(int argc, char *argv[]) {
       // -------------
       std::cerr << "Invalid program type (1 for client, 0 for server)"
                 << std::endl;
+      // -------------
+      // =   區塊2   =
+      // -------------
     }
   }
 }

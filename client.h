@@ -2,14 +2,13 @@
 #define CLIENT_H
 #include <netinet/in.h>
 #include <string>
-#include <thread>
 #include <vector>
 class Client {
 
 public:
   Client(int port = 8080);
   void SetServerIP(char *ip);
-  std::thread Spawn();
+  void Start();
 
 private:
   void CreateSocket();

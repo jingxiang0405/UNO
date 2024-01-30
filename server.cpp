@@ -18,11 +18,17 @@ extern "C" {
 }
 
 // for server
-struct PlayerInfo {
+struct ClientInfo {
   int socket_fd;
   std::string name;
-  std::string deck;
 };
+
+Server::Server(int player_count, int port) {
+  this->port = port;
+  this->max_player_count = player_count;
+}
+
+Server::~Server() { close(server_fd); }
 
 char *GetIPAddress() {
   struct ifaddrs *ifaddr, *ifa;
@@ -60,23 +66,6 @@ char *GetIPAddress() {
   freeifaddrs(ifaddr);
   throw "Server Address not found";
 }
-
-Server::Server(int player_count, int port) {
-  this->port = port;
-  /**/
-  /* if (player_count > 9 || player_count < 3) { */
-  /*   throw "Number of Players should be 3 ~ 9"; */
-  /* } */
-  this->max_player_count = player_count;
-  try {
-    ip = GetIPAddress();
-  } catch (const char *e) {
-    throw;
-  }
-}
-
-Server::~Server() { close(server_fd); }
-
 Server *Server::complete() {
   std::cout << "Complete" << std::endl;
   return this;
@@ -93,6 +82,7 @@ Server *Server::CreateSocket() {
 
 Server *Server::SetupAddress() {
   std::cout << "Setting address" << std::flush;
+  ip = GetIPAddress();
   address.sin_family = AF_INET;
   address.sin_addr.s_addr = inet_addr(ip);
   address.sin_port = htons(port);
@@ -100,7 +90,7 @@ Server *Server::SetupAddress() {
 }
 
 Server *Server::BindAddress() {
-  std::cout << "binding address" << std::endl;
+  std::cout << "binding address" << std::flush;
   if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
     throw "Socket binding error";
   }
@@ -108,7 +98,7 @@ Server *Server::BindAddress() {
 }
 
 Server *Server::Listen() {
-  std::cout << "listening...(max:" << max_player_count << std::endl;
+  std::cout << "listening...(max:" << max_player_count << ")" << std::flush;
   if (listen(server_fd, max_player_count) < 0) {
     throw "Socket listen error";
   }
@@ -128,6 +118,7 @@ int Server::Accept() {
 }
 
 char *Server::getIP() const { return ip; }
+
 void Server::Loop() {
 
   printf("Initializing Server...\n");
@@ -148,16 +139,16 @@ void Server::Loop() {
   printf("Server is up on ip:%s\n", ip);
 
   // wait for clients connection
-  std::vector<PlayerInfo> player_vec(max_player_count);
+  std::vector<ClientInfo> client_vec(max_player_count);
   for (int i = 0; i < max_player_count; ++i) {
-    PlayerInfo p;
+    ClientInfo p;
     char buf[20];
     memset(buf, 0, 20);
     int new_socket = Accept();
     p.socket_fd = new_socket;
     read(new_socket, buf, 20);
     p.name = std::string(buf);
-    player_vec[i] = p;
+    client_vec[i] = p;
     printf("Client Connected: \"%s\"\n", buf);
   }
 
@@ -165,56 +156,74 @@ void Server::Loop() {
 
   // send init message
   for (int i = 0; i < max_player_count; ++i) {
-    PlayerInfo &player = player_vec[i];
+    ClientInfo &client = client_vec[i];
     // id
     std::string message = "i" + std::to_string(i);
 
     // every player's name
     for (int j = 0; j < max_player_count; ++j) {
 
-      message += "," + player_vec[j].name;
+      message += "," + client_vec[j].name;
     }
-    // test
-    std::cout << "Message to client[id=" << i << ", socket=" << player.socket_fd
-              << "]:" << message << std::endl;
+
     // send init message
-    write(player.socket_fd, message.c_str(), message.length());
+    write(client.socket_fd, message.c_str(), message.length());
     memset(buffer, 0, 1024);
-    read(player.socket_fd, buffer, 1024);
+    read(client.socket_fd, buffer, 1024);
   }
 
   uno_server_init(max_player_count);
+
   // in-game loop
   std::cout << "Game started." << std::endl;
-  // TODO
   while (true) {
-    for (int id = 0; id < player_vec.size(); ++id) {
+    for (int id = 0; id < client_vec.size(); ++id) {
+
+      // (from uno_server.cpp) get message to client
       char *command = command_to_client(id);
+
       std::cout << "Command to client(id=" << id
-                << ", socket=" << player_vec[id].socket_fd << "):\"" << command
+                << ", socket=" << client_vec[id].socket_fd << "):\"" << command
                 << "\"" << std::endl;
-      send(player_vec[id].socket_fd, command, strlen(command), 0);
+
+      // send message to client
+      if (send(client_vec[id].socket_fd, command, strlen(command), 0) == -1) {
+        throw "Write Error";
+      }
     }
+
+    // (from uno_server.cpp) get the target for server to read
     int id = get_current_id();
     if (id == -1) {
 
       break;
     } else {
-      std::cout << "Now is id=" << id << "\'s turn" << std::endl;
+      std::cout << "Current id=" << id << std::endl;
       memset(buffer, 0, 1024);
-      if (recv(player_vec[id].socket_fd, buffer, 1024, 0) < 0) {
-        std::cerr << "Read Error" << std::endl;
+
+      // read
+      if (recv(client_vec[id].socket_fd, buffer, 1024, 0) < 0) {
+        throw "Read Error";
       }
+
       std::cout << "Message from client[id=" << id << "]:" << buffer
                 << std::endl;
+
+      // (from uno_server.cpp) deal with the message from client
       handle_client_message(buffer);
     }
   }
-  for (auto &player : player_vec) {
+
+  // close connnection
+  for (auto &player : client_vec) {
     close(player.socket_fd);
   }
 }
 
-std::thread Server::Spawn() {
-  return std::thread([this] { Loop(); });
+void Server::Start() {
+  try {
+    Loop();
+  } catch (const char *err) {
+    std::cerr << err << std::endl;
+  }
 }

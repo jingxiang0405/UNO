@@ -72,7 +72,7 @@ void Client::Loop() {
     // read message from server
     memset(buf, 0, 1024);
     recv(socket_fd, buf, 1024, 0);
-    std::cout << "Message from server:" << buf << std::endl;
+
     // string for further manipulations
     std::string str(buf);
     str = str.substr(1);
@@ -81,7 +81,6 @@ void Client::Loop() {
 
     // init
     if (buf[0] == 'i') {
-      std::cout << "Init" << std::endl;
       std::cout << "Your id is " << ss[0] << std::endl;
       this->id = ss[0].c_str()[0] - '0';
       CLI::client_id = this->id;
@@ -103,6 +102,7 @@ void Client::Loop() {
     else if (buf[0] == 'u') {
 
       CLI::print_update(ss);
+
       // your turn
       if (this->id == ss[0].c_str()[0] - '0') {
 
@@ -129,7 +129,10 @@ void Client::Loop() {
   close(socket_fd);
 }
 
-// creating a thread for execution
-std::thread Client::Spawn() {
-  return std::thread([this] { Loop(); });
+void Client::Start() {
+  try {
+    Loop();
+  } catch (const char *err) {
+    std::cerr << err << std::endl;
+  }
 }
