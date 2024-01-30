@@ -257,7 +257,7 @@ void handle_client_message(char *card) {
 }
 
 int get_current_id() {
-  // 回傳當前玩家的id
+  // 回傳當前玩家的id（如果遊戲已結束，回傳-1)
   // TODO
   // -------------
   // =   區塊7   =
