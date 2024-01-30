@@ -60,6 +60,7 @@ char *UnoDealer::get_card(int quantity) {
 char *UnoDealer::get_uno_first_card() {
   std::string s;
   while (true) {
+    // 取出牌庫最後一張，並且複製到s上
     // TODO
     // -------------
     // =   區塊4   =
