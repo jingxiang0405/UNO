@@ -38,7 +38,13 @@ bool is_valid_play(char *card) {
   return (card[0] == 'w' || card[0] == 'f' || top_card[0] == card[0] ||
           top_card[1] == card[1]);
 }
-
+int check_end() {
+  for (int i = 0; i < number_of_player; ++i) {
+    if (strlen(card_arr[i]) == 0)
+      return i;
+  }
+  return -1;
+}
 void uno_server_init(int player_count) {
   order = true;
   isEnd = false;
@@ -85,13 +91,7 @@ Player *get_next_player() {
   return (order) ? current_player->next : current_player->prev;
 }
 
-int check_end() {
-  for (int i = 0; i < number_of_player; ++i) {
-    if (strlen(card_arr[i]) == 0)
-      return i;
-  }
-  return -1;
-}
+
 // =============================
 //
 // =============================
